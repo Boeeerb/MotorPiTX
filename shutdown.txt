@@ -1,0 +1,29 @@
+#! /bin/sh
+# /etc/init.d/shutdown
+
+### BEGIN INIT INFO
+# Provides:          noip
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Shutdown script for MotorPiTX board
+# Description:       This will start the Python script to switch on the Ready LED, and listen for the shutdown command from the ATTiny
+### END INIT INFO
+
+
+ case "$1" in
+  start)
+    sudo python /etc/shutdown.py
+    ;;
+  stop)
+    ;;
+  *)
+    sleep 2s
+    killall python
+    exit 1
+    ;;
+
+esac
+exit 0
+
