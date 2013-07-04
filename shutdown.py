@@ -17,3 +17,4 @@ while True:
      GPIO.cleanup()
      break
   time.sleep(1)
+

@@ -1,0 +1,52 @@
+
+const int buttonPin = 3;
+const int relayPin = 0;
+const int uartPin = 4;
+const int shutdownPin = 2;
+
+int shutdownComplete = 1;
+unsigned long time;
+unsigned long oldTime;
+
+
+void setup() {    
+  pinMode(relayPin, OUTPUT);  // Controls transistor for relay
+  pinMode(buttonPin, INPUT);  // From switch
+  pinMode(uartPin, INPUT);  // From UART TX of Pi
+}
+
+void loop(){
+
+  if (digitalRead(uartPin) == LOW) { // The Pi is off
+    if (digitalRead(buttonPin) == HIGH) { // And button is pressed
+      digitalWrite(relayPin, HIGH); // Turn on relay
+      shutdownComplete = 0; // Check to see if the Pi has recently shutdown
+      delay(10000); // Wait 10 secs for UART to stabilise
+    } 
+    else {
+      //      if ( digitalRead(uartPin) == LOW) { // If UART goes low, it signals Pi is rebooted or halted
+      if ( shutdownComplete == 0 ) { // If Pi has shutdown or just rebooting
+        delay(5000); // If it's rebooted, we will wait to see if UART goes high
+      }
+      if ( digitalRead(uartPin) == LOW) { // If it doesn't, we assume it's halted, so kill the relay
+        digitalWrite(shutdownPin, LOW);
+        digitalWrite(relayPin, LOW);
+        shutdownComplete = 1;
+      }
+
+    }
+  } 
+  else {
+    if (digitalRead(buttonPin) == HIGH) {
+      delay(3000);
+      if (digitalRead(buttonPin) == HIGH) {
+        digitalWrite(relayPin, LOW);
+        digitalWrite(shutdownPin, LOW);
+        shutdownComplete = 1;
+      } 
+      else {
+        digitalWrite(shutdownPin, HIGH);
+      }
+    }
+  }
+}
