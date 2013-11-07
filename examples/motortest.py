@@ -5,7 +5,7 @@ Count = 0
 while Count < 2:
 	motorpitx.motor1(0)
 	time.sleep(1)
-	motorpitx.motor1(500)
+	motorpitx.motor1(-50)
 	motorpitx.motor2(40)
 	time.sleep(1)
 	motorpitx.motor1(50)
